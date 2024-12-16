@@ -34,7 +34,7 @@ int main() {
   printf("[+]Listening...\n");
   addr_size = sizeof(newAddr);
 
-  accept(newSocket, (struct sockaddr *)&newAddr, &addr_size);
+  newSocket = accept(networkSocket, (struct sockaddr *)&newAddr, &addr_size);
 
   strcpy(buff, "Nigga\n");
   send(newSocket, buff, strlen(buff), 0);
