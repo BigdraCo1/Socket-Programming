@@ -12,7 +12,7 @@ int main() {
   char buff[BUFFER_SIZE];
 
   // create a socket
-  int network_socket;
+  int network_socket, n;
   network_socket =
       socket(AF_INET, SOCK_STREAM,
              0); // int socket(int domain, int type, int protocol); 0 in
@@ -34,10 +34,21 @@ int main() {
   }
   printf("[+]Connected to the Server\n");
 
-  recv(network_socket, buff, BUFFER_SIZE,
-       0); // int recv(int socket, char *buffer, int length, int flags);
-  printf("Data Recieve : %s\n", buff);
+  while (1) {
+    bzero(buff, BUFFER_SIZE);
+    n = read(network_socket, buff, BUFFER_SIZE);
+    if (n < 0)
+      error("Error on reading.");
+    printf("Server : %s\n", buff);
 
+    bzero(buff, BUFFER_SIZE);
+    fgets(buff, BUFFER_SIZE, stdin);
+    n = write(network_socket, buff, strlen(buff));
+    if (n < 0)
+      error("Error on writing.");
+    if (strncmp("Zhaijian", buff, 8) == 0)
+      break;
+  }
   close(network_socket);
   return 0;
 }

@@ -15,11 +15,8 @@ void error(char *msg) {
 }
 
 int main() {
-  int networkSocket;
-  struct sockaddr_in serverAddr;
-
-  int newSocket;
-  struct sockaddr_in newAddr;
+  int networkSocket, newSocket, n;
+  struct sockaddr_in newAddr, serverAddr;
 
   socklen_t addr_size;
   char buff[BUFFER_SIZE];
@@ -56,7 +53,7 @@ int main() {
     n = write(newSocket, buff, strlen(buff));
     if (n < 0)
       error("Error on writing.");
-    if (strcmp("Zhaijian", buff, 8) == 0)
+    if (strncmp("Zhaijian", buff, 8) == 0)
       break;
   }
 
