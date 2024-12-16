@@ -1,11 +1,17 @@
 #include <netinet/in.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <sys/socket.h>
 #include <sys/types.h>
 
 #define PORT 9000
 #define BUFFER_SIZE 1024
+
+void error(char *msg) {
+  perror(msg);
+  exit(1);
+}
 
 int main() {
 
@@ -36,16 +42,16 @@ int main() {
 
   while (1) {
     bzero(buff, BUFFER_SIZE);
-    n = read(network_socket, buff, BUFFER_SIZE);
-    if (n < 0)
-      error("Error on reading.");
-    printf("Server : %s\n", buff);
-
-    bzero(buff, BUFFER_SIZE);
     fgets(buff, BUFFER_SIZE, stdin);
     n = write(network_socket, buff, strlen(buff));
     if (n < 0)
       error("Error on writing.");
+
+    bzero(buff, BUFFER_SIZE);
+    n = read(network_socket, buff, BUFFER_SIZE);
+    if (n < 0)
+      error("Error on reading");
+    printf("Server : %s\n", buff);
     if (strncmp("Zhaijian", buff, 8) == 0)
       break;
   }
