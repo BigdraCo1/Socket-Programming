@@ -19,6 +19,7 @@ int main() {
   char buff[BUFFER_SIZE];
 
   networkSocket = socket(AF_INET, SOCK_STREAM, 0);
+  printf("[+]Server Socket created successfully\n");
   // initializes the struct to all zeros to ensure no garbage values
   bzero(&serverAddr, sizeof(serverAddr));
   serverAddr.sin_family = AF_INET;
@@ -27,8 +28,10 @@ int main() {
 
   // bind socket
   bind(networkSocket, (struct sockaddr *)&serverAddr, sizeof(serverAddr));
+  printf("[+]Bind to the port %d\n", PORT);
 
   listen(networkSocket, SOMAXCONN);
+  printf("[+]Listening...\n");
   addr_size = sizeof(newAddr);
 
   accept(newSocket, (struct sockaddr *)&newAddr, &addr_size);
