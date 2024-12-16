@@ -27,6 +27,10 @@ int main(){
     return 1;
   }
 
-  recv(network_socket, buff, BUFFER_SIZE, 0);
+  recv(network_socket, buff, BUFFER_SIZE, 0); // int recv(int socket, char *buffer, int length, int flags);
   printf("Data Recieve : %s\n", buff);
+
+  close(network_socket);
+  return 0;
 }
+
