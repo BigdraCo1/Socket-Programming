@@ -17,7 +17,7 @@ void error(char *msg) {
 
 int newSocket;
 
-void find_new_line(int size, char *buffer[]) {
+void find_new_line(int size, char *buffer) {
   for (int i = 0; i < size; i++) {
     if (buffer[i] == '\n') {
       memset(&buffer[i], '\0', sizeof(char));

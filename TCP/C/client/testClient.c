@@ -17,6 +17,15 @@ void error(char *msg) {
 
 int network_socket;
 
+void find_new_line(int size, char *buffer) {
+  for (int i = 0; i < size; i++) {
+    if (buffer[i] == '\n') {
+      memset(&buffer[i], '\0', sizeof(char));
+      break;
+    }
+  }
+}
+
 void *read_from_server(void *arg) {
   char buff[BUFFER_SIZE];
   int n;
@@ -27,7 +36,7 @@ void *read_from_server(void *arg) {
     if (n < 0) {
       error("Error on reading.");
     }
-
+    find_new_line(BUFFER_SIZE, &buff);
     printf("%s <-- From server\n", buff);
 
     if (strncmp("Zhaijian", buff, 8) == 0) {
