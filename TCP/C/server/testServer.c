@@ -17,13 +17,33 @@ void error(char *msg) {
 
 int newSocket;
 
+void find_new_line(int size, char *buffer[]) {
+  for (int i = 0; i < size; i++) {
+    if (buffer[i] == '\n') {
+      memset(&buffer[i], '\0', sizeof(char));
+      break;
+    }
+  }
+}
+
 void *read_socket(void *arg) {
   char buff[BUFFER_SIZE];
-  int n = read(newSocket, buff, BUFFER_SIZE);
-  if (n < 0) {
-    error("Error reading.");
+  bzero(buff, BUFFER_SIZE);
+  while (1) {
+    int n = read(newSocket, buff, BUFFER_SIZE);
+    if (n < 0) {
+      error("Error reading.");
+    }
+    find_new_line(BUFFER_SIZE, &buff);
+    printf("%s <--- From client\n", buff);
+    if (strncmp("Zhaijian", buff, 8) == 0) {
+      printf("[+]Server closed the connection. Exiting...\n");
+      close(newSocket);
+      exit(0);
+    }
   }
-  printf("Client : %s\n", buff);
+
+  return NULL;
 }
 
 int main() {
@@ -60,7 +80,6 @@ int main() {
 
   while (1) {
     bzero(buff, BUFFER_SIZE);
-    printf("Server :");
     fgets(buff, BUFFER_SIZE, stdin);
     n = write(newSocket, buff, strlen(buff));
     if (n < 0)

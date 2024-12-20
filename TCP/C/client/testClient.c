@@ -28,7 +28,7 @@ void *read_from_server(void *arg) {
       error("Error on reading.");
     }
 
-    printf("\nServer: %s\n", buff);
+    printf("%s <-- From server\n", buff);
 
     if (strncmp("Zhaijian", buff, 8) == 0) {
       printf("[+]Server closed the connection. Exiting...\n");
@@ -72,7 +72,6 @@ int main() {
   // Main thread handles user input
   while (1) {
     bzero(buff, BUFFER_SIZE);
-    printf("Client :");
     fgets(buff, BUFFER_SIZE, stdin);
     n = write(network_socket, buff, strlen(buff));
     if (n < 0) {
