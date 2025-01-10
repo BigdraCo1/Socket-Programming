@@ -7,8 +7,8 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <arpa/inet.h>
 
-#define PORT 9000
 #define BUFFER_SIZE 1024
 
 void error(char *msg) {
@@ -53,7 +53,16 @@ void *read_socket(void *arg) {
   return NULL;
 }
 
-int main() {
+int main(int argc, char *argv[]) {
+
+  if (argc != 3) {
+    fprintf(stderr, "Usage: %s <IP Address> <Port>\n", argv[0]);
+    exit(1);
+  }
+
+  char *ip_address = argv[1];
+  int port = atoi(argv[2]);
+
   pthread_t rT;
   int networkSocket, n;
   struct sockaddr_in newAddr, serverAddr;
@@ -66,12 +75,14 @@ int main() {
   // initializes the struct to all zeros to ensure no garbage values
   bzero(&serverAddr, sizeof(serverAddr));
   serverAddr.sin_family = AF_INET;
-  serverAddr.sin_port = htons(PORT);
-  serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
+  serverAddr.sin_port = htons(port);
+  if (inet_pton(AF_INET, ip_address, &serverAddr.sin_addr) <= 0) {
+    error("Invalid address/ Address not supported.");
+  }
 
   // bind socket
   bind(networkSocket, (struct sockaddr *)&serverAddr, sizeof(serverAddr));
-  printf("[+]Bind to the port %d\n", PORT);
+  printf("[+]Bind to the port %d\n", port);
 
   // Listen new socket
   listen(networkSocket, SOMAXCONN);

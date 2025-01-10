@@ -6,8 +6,8 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <arpa/inet.h>
 
-#define PORT 9000
 #define BUFFER_SIZE 1024
 
 void error(char *msg) {
@@ -51,7 +51,16 @@ void *read_from_server(void *arg) {
   return NULL;
 }
 
-int main() {
+int main(int argc, char *argv[]) {
+
+  if (argc != 3) {
+    fprintf(stderr, "Usage: %s <IP Address> <Port>\n", argv[0]);
+    exit(1);
+  }
+
+  char *ip_address = argv[1];
+  int port = atoi(argv[2]);
+
   char buff[BUFFER_SIZE];
   int n;
 
@@ -65,8 +74,10 @@ int main() {
   struct sockaddr_in servaddr;
   bzero(&servaddr, sizeof(servaddr));
   servaddr.sin_family = AF_INET;
-  servaddr.sin_port = htons(PORT);
-  servaddr.sin_addr.s_addr = inet_addr("127.0.0.1");
+  servaddr.sin_port = htons(port);
+  if (inet_pton(AF_INET, ip_address, &servaddr.sin_addr) <= 0) {
+    error("Invalid address/ Address not supported.");
+  }
 
   if (connect(network_socket, (struct sockaddr *)&servaddr, sizeof(servaddr)) <
       0) {
