@@ -37,15 +37,17 @@ void *read_from_server(void *arg) {
       error("Error on reading.");
     }
     find_new_line(BUFFER_SIZE, &buff);
-    printf("%s <-- From server\n", buff);
 
     if (strncmp("Zhaijian", buff, 8) == 0) {
       printf("[+]Server closed the connection. Exiting...\n");
-      close(network_socket);
-      exit(0);
+      break;
+    } else {
+      printf("%s <-- From server\n", buff);
     }
   }
 
+  close(network_socket);
+  exit(0);
   return NULL;
 }
 

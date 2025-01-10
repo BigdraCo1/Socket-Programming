@@ -6,6 +6,7 @@
 #include <strings.h>
 #include <sys/socket.h>
 #include <sys/types.h>
+#include <unistd.h>
 
 #define PORT 9000
 #define BUFFER_SIZE 1024
@@ -35,14 +36,20 @@ void *read_socket(void *arg) {
       error("Error reading.");
     }
     find_new_line(BUFFER_SIZE, &buff);
-    printf("%s <--- From client\n", buff);
     if (strncmp("Zhaijian", buff, 8) == 0) {
       printf("[+]Server closed the connection. Exiting...\n");
-      close(newSocket);
-      exit(0);
+      break;
+    } else {
+      if (n > 0) {
+        printf("%s <--- From client\n", buff);
+      }
     }
+
+    bzero(buff, BUFFER_SIZE);
   }
 
+  close(newSocket);
+  exit(0);
   return NULL;
 }
 
@@ -84,12 +91,13 @@ int main() {
     n = write(newSocket, buff, strlen(buff));
     if (n < 0)
       error("Error on writing.");
-    if (strncmp("Zhaijian", buff, 8) == 0)
+    if (strncmp("Zhaijian\n", buff, 9) == 0) {
+      close(newSocket);
       break;
+    }
   }
   pthread_join(rT, NULL);
 
-  close(newSocket);
   close(networkSocket);
   return 0;
 }
