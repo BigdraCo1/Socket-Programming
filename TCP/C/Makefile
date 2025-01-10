@@ -3,12 +3,12 @@ CLIENT_DIR = client
 SERVER_DIR = server
 
 # Define the source files
-CLIENT_SRC = $(CLIENT_DIR)/TCPclient.c
-SERVER_SRC = $(SERVER_DIR)/TCPserver.c
+CLIENT_SRC = $(CLIENT_DIR)/testClient.c
+SERVER_SRC = $(SERVER_DIR)/testServer.c
 
 # Define the output executables
-CLIENT_EXEC = $(CLIENT_DIR)/TCPclient
-SERVER_EXEC = $(SERVER_DIR)/TCPserver
+CLIENT_EXEC = $(CLIENT_DIR)/testClient
+SERVER_EXEC = $(SERVER_DIR)/testServer
 
 # Compiler and flags
 CC = gcc
